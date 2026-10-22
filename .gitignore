@@ -1,0 +1,9 @@
+# Aufnahmen und Diagnosen enthalten Namen und Chat echter Zuschauer
+testdata/
+*.diag.json
+whatnot-diagnose-*.json
+whatnot-aufnahme-*.json
+# Test-Ausgaben
+tests/output/
+*.log
+node_modules/

@@ -1785,7 +1785,7 @@ body.idle .gear:not(:focus-visible) { opacity: 0; pointer-events: none; }
   }
   let soldTimer;
   function markSold(d) {
-    S.sold++;
+    if (S.ordersRaw == null) S.sold++; // im Dashboard zählt die Bestellzahl von Whatnot (ct-orders)
     const user = String(d.user ?? '').replace(/^@/, '').slice(0, 40);
     // Sofortkauf hat mit der laufenden Auktion nichts zu tun: dann keine Auktionswerte einsetzen
     const shop = d.kind === 'kauf';
@@ -1794,7 +1794,7 @@ body.idle .gear:not(:focus-visible) { opacity: 0; pointer-events: none; }
     const title = d.title || (shop ? '' : S.auction?.title);
     addLabel({ kind: 'sale', sub: shop ? 'shop' : '', user, title: qty > 1 ? `${qty}× ${title || ''}`.trim() : title, price });
     els.soldWord.textContent = shop ? 'Sofortkauf' : 'Verkauft';
-    els.soldText.textContent = [user && `an @${user}`, price != null && `für ${eur.format(price)}`].filter(Boolean).join(' ');
+    els.soldText.textContent = [user && `an @${user}`, price != null && `für ${fmtPrice(price)}`].filter(Boolean).join(' ');
     els.soldFlash.hidden = false;
     clearTimeout(soldTimer);
     soldTimer = setTimeout(() => { els.soldFlash.hidden = true; }, 3800);
@@ -2170,19 +2170,6 @@ body.idle .gear:not(:focus-visible) { opacity: 0; pointer-events: none; }
     toast(host ? `Verbunden mit der Show von @${host}` : 'Mit Whatnot-Show verbunden');
   }
   window.addEventListener('message', (e) => handleExternal(e.data));
-  try {
-    const bc = new BroadcastChannel('ct-board');
-    bc.onmessage = (e) => handleExternal(e.data);
-  } catch { /* nicht verfügbar */ }
-  window.CTBoard = {
-    chat: (user, text, id) => handleExternal({ type: 'ct-chat', user, text, id }),
-    viewers: (count) => handleExternal({ type: 'ct-viewers', count }),
-    auction: (a) => handleExternal({ ...a, type: 'ct-auction' }),
-    sold: (user, price) => handleExternal({ type: 'ct-sold', user, price }),
-    giveaway: (g) => handleExternal({ ...g, type: 'ct-giveaway' }),
-    reset: () => resetCounts(),
-    demo: () => setMode('demo')
-  };
 
   // ---------- Bedienung ----------
   function togglePanel(open) {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Stream-Board: Whatnot-Brücke
 // @namespace    https://collectntrade.de/
-// @version      0.7.0
+// @version      0.7.1
 // @description  Liest Chat, Zuschauer, Auktion, Verkäufe und Giveaways aus deiner eigenen Whatnot-Show und schickt sie an das lokale Stream-Board.
 // @match        https://www.whatnot.com/*
 // @match        file:///*collectntrade-board*
@@ -47,7 +47,7 @@
       if (e.source !== window || !e.data || e.data.type !== 'ctcfg') return;
       if (typeof e.data.whatnotUser === 'string') GM_setValue('ct_host', e.data.whatnotUser.trim().replace(/^@/, '').toLowerCase());
     });
-    window.postMessage({ type: 'ctbridge-hello', version: '0.7.0', whatnotUser: GM_getValue('ct_host', '') }, '*');
+    window.postMessage({ type: 'ctbridge-hello', version: '0.7.1', whatnotUser: GM_getValue('ct_host', '') }, '*');
     console.log('[Stream-Board] Board-Brücke aktiv, warte auf Whatnot.');
     return;
   }
@@ -59,16 +59,16 @@
   const pill = document.createElement('div');
   (pillHost.attachShadow ? pillHost.attachShadow({ mode: 'open' }) : pillHost).append(pill);
   pill.setAttribute('style', 'padding:5px 10px;border-radius:999px;background:#0e1b4d;color:#9aeae3;font:700 11px/1.2 system-ui,sans-serif;opacity:.92');
-  pill.textContent = 'CT-Board 0.7.0 startet …';
+  pill.textContent = 'CT-Board 0.7.1 startet …';
   const attachPill = () => { if (!pillHost.isConnected) document.documentElement.append(pillHost); };
   attachPill();
-  console.log('[Stream-Board] Brücke 0.7.0 geladen auf', location.href);
+  console.log('[Stream-Board] Brücke 0.7.1 geladen auf', location.href);
   try {
     reader();
   } catch (err) {
     pill.style.background = '#5a0b1e';
     pill.style.color = '#ffd1dc';
-    pill.textContent = `CT-Board 0.7.0 Fehler beim Start: ${err && err.message ? err.message : err}`;
+    pill.textContent = `CT-Board 0.7.1 Fehler beim Start: ${err && err.message ? err.message : err}`;
     console.error('[Stream-Board] Fehler beim Start:', err);
   }
 
@@ -90,7 +90,8 @@
     if (evt.type === 'ct-sold' || evt.type === 'ct-show' || (evt.type === 'ct-giveaway' && evt.winner)) {
       diagLog(evt.type, { user: evt.user || evt.winner || evt.host || '', title: evt.title || '', price: evt.price ?? null });
     }
-    ring.push({ ...evt, _id: ++nextId });
+    // Nie unter die Uhrzeit: übernimmt ein früher geladenes Fenster das Senden, bleiben die IDs trotzdem steigend
+    ring.push({ ...evt, _id: nextId = Math.max(nextId + 1, Date.now()) });
     if (ring.length > 80) ring.splice(0, ring.length - 80);
     dirty = true;
   }
@@ -102,7 +103,7 @@
   setInterval(flush, 250);
 
   // ---- Diagnose: merkt sich, was die Brücke nicht versteht (Grundlage für Anpassungen) ----
-  const VERSION = '0.7.0';
+  const VERSION = '0.7.1';
   const diag = { start: new Date().toISOString(), events: [], unknown: [], snaps: [], pages: [] };
   const diagSeen = new Set();
   let lastSnapAt = 0;

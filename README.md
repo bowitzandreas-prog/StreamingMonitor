@@ -22,7 +22,7 @@ Die Daten kommen aus der eigenen Whatnot-Show. Ein Tampermonkey-Script (die „B
 2. **Brücke einfügen:** Tampermonkey → Dashboard → „+“ → Inhalt von `bridge/collectntrade-whatnot-bridge.user.js` einfügen → Speichern.
 3. **Board öffnen:** `board/collectntrade-board-lokal.html` auf den Desktop legen und in Chrome öffnen. Der Dateiname muss `collectntrade-board` oder `stream-board` enthalten, sonst greift das Script dort nicht.
 4. **Im Board:** Einstellungen → Einrichtung → eigenen Whatnot-Namen eintragen. Nur Shows dieses Accounts werden übernommen.
-5. **Whatnot öffnen** (Zuschauer-Ansicht der eigenen Show oder Seller-Dashboard) im selben Chrome-Profil wie das Board. Unten links erscheint die Statusanzeige, z. B. `CT-Board 0.7.0 ● Seller-Dashboard @deinname`.
+5. **Whatnot öffnen** (Zuschauer-Ansicht der eigenen Show oder Seller-Dashboard) im selben Chrome-Profil wie das Board. Unten links erscheint die Statusanzeige, z. B. `CT-Board 0.7.1 ● Seller-Dashboard @deinname`.
 
 Board und Whatnot müssen im selben Chrome-Profil laufen, weil die Brücke die Ereignisse über den Tampermonkey-Speicher weitergibt.
 
